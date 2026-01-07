@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlackRoad Music - AI Remix Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Brand Colors */
+            --black: #000000;
+            --white: #FFFFFF;
+            --amber: #F5A623;
+            --orange: #F26522;
+            --hot-pink: #FF1D6C;
+            --magenta: #E91E63;
+            --electric-blue: #2979FF;
+            --sky-blue: #448AFF;
+            --violet: #9C27B0;
+            --deep-purple: #5E35B1;
+
+            /* Gradients (Golden Ratio 38.2% & 61.8%) */
+            --gradient-brand: linear-gradient(135deg, var(--amber) 0%, var(--hot-pink) 38.2%, var(--violet) 61.8%, var(--electric-blue) 100%);
+            --gradient-title: linear-gradient(90deg, var(--amber) 0%, var(--hot-pink) 50%, var(--violet) 100%);
+
+            /* Glass Effect */
+            --glass-bg: rgba(20, 20, 30, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-light: rgba(255, 255, 255, 0.03);
+
+            /* Spacing (Golden Ratio) */
+            --space-xs: 8px;
+            --space-sm: 13px;
+            --space-md: 21px;
+            --space-lg: 34px;
+            --space-xl: 55px;
+            --space-2xl: 89px;
+
+            /* Easing */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.618;
+        }
+
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 55px 55px;
+            animation: grid-move 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(55px, 55px); }
+        }
+
+        /* Floating Orbs */
+        .orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            animation: orb-pulse 8s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--hot-pink);
+            opacity: 0.08;
+            top: -200px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--electric-blue);
+            opacity: 0.06;
+            bottom: -150px;
+            left: -100px;
+            animation-delay: -4s;
+        }
+
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+            background: var(--violet);
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -2s;
+        }
+
+        @keyframes orb-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.2); opacity: 0.1; }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+            padding-top: var(--space-xl);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient-title);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: var(--space-sm);
+            animation: title-float 3s ease-in-out infinite;
+        }
+
+        @keyframes title-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 21px;
+            backdrop-filter: blur(20px);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            transition: all 0.3s var(--ease-out-expo);
+        }
+
+        .glass-card:hover {
+            border-color: var(--hot-pink);
+            box-shadow: 0 0 40px rgba(255, 29, 108, 0.2);
+        }
+
+        /* Remix Studio */
+        .remix-studio {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .track-card {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 21px;
+            padding: var(--space-lg);
+            transition: all 0.3s var(--ease-spring);
+            cursor: pointer;
+        }
+
+        .track-card:hover {
+            border-color: var(--hot-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(255, 29, 108, 0.3);
+        }
+
+        .track-card.active {
+            border-color: var(--electric-blue);
+            background: linear-gradient(135deg, rgba(41, 121, 255, 0.1) 0%, var(--glass-bg) 100%);
+        }
+
+        .track-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .track-artist {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-md);
+        }
+
+        /* Waveform Visualizer */
+        .waveform {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 13px;
+            margin: var(--space-md) 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-bars {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 var(--space-xs);
+            gap: 3px;
+        }
+
+        .wave-bar {
+            flex: 1;
+            background: var(--gradient-brand);
+            border-radius: 3px;
+            height: 20%;
+            transition: height 0.1s ease;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: var(--space-sm) var(--space-lg);
+            border: 2px solid var(--glass-border);
+            border-radius: 13px;
+            background: var(--glass-bg);
+            color: var(--white);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-spring);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            border-color: var(--hot-pink);
+            background: linear-gradient(135deg, var(--hot-pink) 0%, var(--violet) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 29, 108, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--gradient-brand);
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        /* AI Controls */
+        .ai-controls {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, var(--glass-bg) 100%);
+            border: 2px solid var(--violet);
+            border-radius: 21px;
+            padding: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+
+        .ai-controls h3 {
+            font-size: 1.5rem;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: var(--space-md);
+        }
+
+        .slider-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-xs);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 13px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 21px;
+            height: 21px;
+            background: var(--gradient-brand);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-spring);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(255, 29, 108, 0.5);
+        }
+
+        /* Mix Output */
+        .mix-output {
+            text-align: center;
+            padding: var(--space-2xl);
+        }
+
+        .mix-status {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .mix-status.ready {
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Visualizer Canvas */
+        #visualizer {
+            width: 100%;
+            height: 200px;
+            border-radius: 21px;
+            background: rgba(0, 0, 0, 0.3);
+            margin: var(--space-lg) 0;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 21px;
+            height: 21px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--hot-pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: var(--space-md);
+            }
+
+            .remix-studio {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="logo">🎵 BlackRoad Music</h1>
+            <p class="tagline">AI-Powered Remix Studio</p>
+        </div>
+
+        <!-- Remix Studio -->
+        <div class="remix-studio">
+            <!-- Track 1: Oh ok -->
+            <div class="track-card" id="track1" onclick="toggleTrack(1)">
+                <div class="track-title">Oh ok</div>
+                <div class="track-artist">iann dior (XXL Freestyle)</div>
+
+                <div class="waveform">
+                    <div class="waveform-bars" id="wave1"></div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" onclick="event.stopPropagation(); playTrack(1)">▶ Play</button>
+                    <button class="btn" onclick="event.stopPropagation(); stopTrack(1)">⏹ Stop</button>
+                    <button class="btn" onclick="event.stopPropagation(); soloTrack(1)">🎧 Solo</button>
+                </div>
+
+                <div class="slider-group" style="margin-top: var(--space-md)">
+                    <div class="slider-label">
+                        <span>Volume</span>
+                        <span id="vol1">100%</span>
+                    </div>
+                    <input type="range" class="slider" min="0" max="100" value="100"
+                           oninput="updateVolume(1, this.value)">
+                </div>
+            </div>
+
+            <!-- Track 2: Charlie Brown Theme -->
+            <div class="track-card" id="track2" onclick="toggleTrack(2)">
+                <div class="track-title">Charlie Brown Theme</div>
+                <div class="track-artist">Vince Guaraldi Trio</div>
+
+                <div class="waveform">
+                    <div class="waveform-bars" id="wave2"></div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn" onclick="event.stopPropagation(); playTrack(2)">▶ Play</button>
+                    <button class="btn" onclick="event.stopPropagation(); stopTrack(2)">⏹ Stop</button>
+                    <button class="btn" onclick="event.stopPropagation(); soloTrack(2)">🎧 Solo</button>
+                </div>
+
+                <div class="slider-group" style="margin-top: var(--space-md)">
+                    <div class="slider-label">
+                        <span>Volume</span>
+                        <span id="vol2">100%</span>
+                    </div>
+                    <input type="range" class="slider" min="0" max="100" value="100"
+                           oninput="updateVolume(2, this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Controls -->
+        <div class="ai-controls glass-card">
+            <h3>🤖 AI Remix Controls</h3>
+
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>AI Mix Blend</span>
+                    <span id="blend-val">50%</span>
+                </div>
+                <input type="range" class="slider" id="blend" min="0" max="100" value="50"
+                       oninput="updateBlend(this.value)">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>Beat Sync Intensity</span>
+                    <span id="sync-val">75%</span>
+                </div>
+                <input type="range" class="slider" id="sync" min="0" max="100" value="75"
+                       oninput="updateSync(this.value)">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label">
+                    <span>AI Creativity</span>
+                    <span id="creativity-val">60%</span>
+                </div>
+                <input type="range" class="slider" id="creativity" min="0" max="100" value="60"
+                       oninput="updateCreativity(this.value)">
+            </div>
+
+            <div class="controls" style="margin-top: var(--space-lg)">
+                <button class="btn btn-primary" onclick="generateRemix()">✨ Generate AI Remix</button>
+                <button class="btn" onclick="autoMix()">🎚️ Auto Mix</button>
+                <button class="btn" onclick="beatDetect()">🥁 Beat Detect</button>
+                <button class="btn" onclick="exportMix()">💾 Export Mix</button>
+            </div>
+        </div>
+
+        <!-- Visualizer -->
+        <div class="glass-card">
+            <canvas id="visualizer"></canvas>
+        </div>
+
+        <!-- Mix Output -->
+        <div class="mix-output">
+            <div class="mix-status ready" id="status">Ready to create your remix! 🎧</div>
+        </div>
+    </div>
+
+    <script>
+        // Audio Context
+        let audioContext;
+        let analyser;
+        let tracks = {
+            1: { active: false, volume: 1.0, playing: false },
+            2: { active: false, volume: 1.0, playing: false }
+        };
+
+        // Initialize waveforms
+        function initWaveforms() {
+            [1, 2].forEach(num => {
+                const container = document.getElementById(`wave${num}`);
+                for (let i = 0; i < 50; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'wave-bar';
+                    bar.style.height = `${Math.random() * 80 + 10}%`;
+                    container.appendChild(bar);
+                }
+            });
+        }
+
+        // Animate waveforms
+        function animateWaveform(trackNum) {
+            const bars = document.querySelectorAll(`#wave${trackNum} .wave-bar`);
+            bars.forEach(bar => {
+                if (tracks[trackNum].playing) {
+                    bar.style.height = `${Math.random() * 80 + 10}%`;
+                } else {
+                    bar.style.height = '20%';
+                }
+            });
+        }
+
+        setInterval(() => {
+            [1, 2].forEach(num => animateWaveform(num));
+        }, 100);
+
+        // Track Controls
+        function toggleTrack(num) {
+            tracks[num].active = !tracks[num].active;
+            const card = document.getElementById(`track${num}`);
+            card.classList.toggle('active');
+        }
+
+        function playTrack(num) {
+            tracks[num].playing = true;
+            updateStatus(`Playing Track ${num}... 🎵`);
+        }
+
+        function stopTrack(num) {
+            tracks[num].playing = false;
+            updateStatus('Stopped');
+        }
+
+        function soloTrack(num) {
+            [1, 2].forEach(n => {
+                if (n !== num) {
+                    tracks[n].playing = false;
+                    document.getElementById(`track${n}`).classList.remove('active');
+                }
+            });
+            tracks[num].playing = true;
+            tracks[num].active = true;
+            document.getElementById(`track${num}`).classList.add('active');
+            updateStatus(`Soloing Track ${num} 🎧`);
+        }
+
+        function updateVolume(num, val) {
+            tracks[num].volume = val / 100;
+            document.getElementById(`vol${num}`).textContent = `${val}%`;
+        }
+
+        // AI Controls
+        function updateBlend(val) {
+            document.getElementById('blend-val').textContent = `${val}%`;
+        }
+
+        function updateSync(val) {
+            document.getElementById('sync-val').textContent = `${val}%`;
+        }
+
+        function updateCreativity(val) {
+            document.getElementById('creativity-val').textContent = `${val}%`;
+        }
+
+        // AI Functions
+        function generateRemix() {
+            updateStatus('🤖 AI is generating your remix... <span class="loading"></span>');
+
+            setTimeout(() => {
+                updateStatus('✨ AI Remix generated! Hit play to hear it.');
+                tracks[1].playing = true;
+                tracks[2].playing = true;
+            }, 2000);
+        }
+
+        function autoMix() {
+            updateStatus('🎚️ AI Auto-mixing tracks...');
+
+            // Simulate auto-mixing
+            const blend = Math.random() * 100;
+            document.getElementById('blend').value = blend;
+            updateBlend(blend.toFixed(0));
+
+            setTimeout(() => {
+                updateStatus('✅ Auto-mix complete!');
+            }, 1500);
+        }
+
+        function beatDetect() {
+            updateStatus('🥁 Detecting beats with AI...');
+
+            setTimeout(() => {
+                const bpm = Math.floor(Math.random() * 40 + 120); // 120-160 BPM
+                updateStatus(`🎯 Beat detected: ${bpm} BPM - Tracks synced!`);
+            }, 1000);
+        }
+
+        function exportMix() {
+            updateStatus('💾 Exporting your remix...');
+
+            setTimeout(() => {
+                updateStatus('✅ Mix exported successfully! 🎉');
+            }, 1500);
+        }
+
+        function updateStatus(msg) {
+            document.getElementById('status').innerHTML = msg;
+        }
+
+        // Visualizer
+        function initVisualizer() {
+            const canvas = document.getElementById('visualizer');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw frequency bars
+                const barCount = 64;
+                const barWidth = canvas.width / barCount;
+
+                for (let i = 0; i < barCount; i++) {
+                    const height = Math.random() * canvas.height * 0.8;
+                    const hue = (i / barCount) * 360;
+
+                    ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+                    ctx.fillRect(
+                        i * barWidth,
+                        canvas.height - height,
+                        barWidth - 2,
+                        height
+                    );
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        }
+
+        // Initialize
+        initWaveforms();
+        initVisualizer();
+
+        console.log('🎵 BlackRoad Music - AI Remix Studio initialized!');
+    </script>
+</body>
+</html>
