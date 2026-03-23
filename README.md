@@ -1,30 +1,20 @@
 # blackroad-os-music
 
-**Part of BlackRoad OS ecosystem** - Production-grade static project
+🎵 BlackRoad Music - AI-Powered Remix Studio with beat detection, auto-mix, and Web Audio API integration
 
-## 🚀 Features
+## Organization
 
-- Production-ready deployment
-- CI/CD pipeline with GitHub Actions
-- Security scanning and monitoring
-- BlackRoad brand compliant
+**BlackRoad-OS** — Core platform — websites, integrations, coordination
 
-## 📋 Quick Start
+## BlackRoad OS
 
-```bash
-# Clone the repository
-git clone https://github.com/BlackRoad-OS/blackroad-os-music.git
-cd blackroad-os-music
-```
+BlackRoad OS is a distributed AI operating system — 20 domains, 668 repositories, 1,000 AI agents, and sovereign infrastructure running on Raspberry Pis and Hailo-8 accelerators. No cloud dependency.
 
-## 🔧 Development
+- [blackroad.io](https://blackroad.io) — Main platform
+- [docs.blackroad.io](https://docs.blackroad.io) — Documentation
+- [GitHub](https://github.com/BlackRoad-OS) — This organization
 
-See contributing guidelines in main repository.
+**Language:** HTML
 
-## 📄 License
 
-Copyright © 2026 BlackRoad OS, Inc. All rights reserved.
-
----
-
-**Built by BlackRoad OS Team** | [blackroad.io](https://blackroad.io)
+*© 2024-2026 BlackRoad OS, Inc. All Rights Reserved.*
